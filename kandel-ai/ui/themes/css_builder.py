@@ -242,6 +242,18 @@ div.stButton > button:active {{ transform: scale(0.97); }}
 }}
 .kai-best-link:hover {{ filter: brightness(1.2); }}
 
+.kai-pill {{
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    padding: .25rem .7rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: .7rem;
+    color: var(--muted);
+}}
+
 h1, h2, h3, h4, p, span, div {{ color: var(--text); }}
 .kai-muted {{ color: var(--muted) !important; }}
 </style>

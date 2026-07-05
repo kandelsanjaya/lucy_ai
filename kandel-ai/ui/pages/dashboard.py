@@ -3,7 +3,7 @@ KANDEL AI - Dashboard Home
 Designed by Kandel Sanjaya
 """
 import streamlit as st
-from ui.components.widgets import stat_card, progress_bar
+from ui.components.widgets import stat_card, progress_bar, circular_progress
 from memory.memory_store import memory_stats, get_all_memory
 from database.db import get_conn
 
@@ -73,14 +73,14 @@ def render_dashboard(user: dict):
         st.markdown('<div class="kai-card">', unsafe_allow_html=True)
         st.markdown("#### Memory Status")
         pct = min(int((mem / max(mem + 50, 1)) * 100) + 40, 98)
-        st.markdown(f"**{pct}%** — Good")
+        circular_progress(pct, size=140, label="USED")
+        st.caption(f"Context tokens: {mem} / 1,200k")
         progress_bar(pct)
-        st.caption(f"{mem} memory items stored")
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
         st.markdown('<div class="kai-card">', unsafe_allow_html=True)
-        st.markdown("#### Recent Chats")
+        st.markdown("#### Recent Activity")
         recent = get_all_memory(user["id"])[:4]
         if not recent:
             st.caption("No conversations yet — start chatting!")
@@ -95,7 +95,12 @@ def render_dashboard(user: dict):
         st.markdown("</div>", unsafe_allow_html=True)
 
         st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
-        st.markdown('<div class="kai-card">', unsafe_allow_html=True)
-        st.markdown("#### Model")
-        st.write(f"`{user.get('model') or 'Groq · llama-3.3-70b-versatile'}`")
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"""
+            <div class="kai-card" style="background:var(--gradient);border:none;">
+                <p style="color:white;font-weight:700;margin-bottom:.3rem;">Model</p>
+                <p style="color:white;font-size:.85rem;opacity:.9;">{user.get('model') or 'Groq · llama-3.3-70b-versatile'}</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )

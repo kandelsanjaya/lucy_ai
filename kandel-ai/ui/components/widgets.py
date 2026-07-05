@@ -59,6 +59,31 @@ def sun_moon_switch(checked: bool, key: str):
     return st.toggle("Light mode", value=checked, key=key, label_visibility="collapsed")
 
 
+def circular_progress(percent: int, size: int = 140, label: str = "USED"):
+    stroke = 10
+    radius = (size - stroke) / 2
+    circumference = 2 * 3.14159 * radius
+    offset = circumference * (1 - percent / 100)
+    st.markdown(
+        f"""
+        <div style="display:flex;justify-content:center;">
+        <svg width="{size}" height="{size}" viewBox="0 0 {size} {size}">
+            <circle cx="{size/2}" cy="{size/2}" r="{radius}" fill="none"
+                stroke="var(--border)" stroke-width="{stroke}" />
+            <circle cx="{size/2}" cy="{size/2}" r="{radius}" fill="none"
+                stroke="var(--accent)" stroke-width="{stroke}" stroke-linecap="round"
+                stroke-dasharray="{circumference}" stroke-dashoffset="{offset}"
+                transform="rotate(-90 {size/2} {size/2})"
+                style="transition: stroke-dashoffset 1s ease; filter: drop-shadow(0 0 6px var(--accent));" />
+            <text x="50%" y="46%" text-anchor="middle" fill="var(--text)" font-size="{size*0.19}" font-weight="700">{percent}%</text>
+            <text x="50%" y="62%" text-anchor="middle" fill="var(--muted)" font-size="{size*0.09}" letter-spacing="1">{label}</text>
+        </svg>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def chat_bubble_user(text: str):
     st.markdown(f'<div class="kai-bubble-user">{text}</div>', unsafe_allow_html=True)
 
