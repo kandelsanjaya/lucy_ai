@@ -1,20 +1,31 @@
-streamlit==1.38.0
-groq==0.11.0
-chromadb==0.5.5
-sentence-transformers==3.0.1
-langdetect==1.0.9
-bcrypt==4.2.0
-PyJWT==2.9.0
-python-dotenv==1.0.1
-pypdf==4.3.1
-python-docx==1.1.2
-openpyxl==3.1.5
-pandas==2.2.2
-ddgs==6.2.5
-requests==2.32.3
-Pillow==10.4.0
-pytesseract==0.3.13
-rank-bm25==0.2.2
-llama-parse==0.5.19
-streamlit-mic-recorder==0.0.8
-gTTS==2.5.3
+# --- Core app ---
+streamlit>=1.38.0
+
+# --- LLM / RAG stack ---
+openai>=1.40.0
+chromadb>=0.5.5
+langchain>=0.2.16
+langchain-community>=0.2.16
+tiktoken>=0.7.0
+
+# --- Documents ---
+pypdf>=4.3.1
+python-docx>=1.1.2
+
+# --- OCR ---
+pytesseract>=0.3.10
+Pillow>=10.4.0
+
+# --- Web search / HTTP ---
+requests>=2.32.3
+beautifulsoup4>=4.12.3
+
+# --- Data / utils ---
+pandas>=2.2.2
+numpy>=1.26.4
+python-dotenv>=1.0.1
+
+# Note: OCR also requires the `tesseract-ocr` system binary:
+#   Ubuntu/Debian:  sudo apt install tesseract-ocr
+#   macOS:          brew install tesseract
+#   Windows:        https://github.com/UB-Mannheim/tesseract/wiki

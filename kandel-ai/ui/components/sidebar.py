@@ -38,12 +38,43 @@ def render_sidebar(user: dict):
             unsafe_allow_html=True,
         )
 
-        if st.button(f"➕  New Chat", use_container_width=True, key="btn_new_chat"):
+        # Gemini-like “New chat” button (icon + label)
+        if st.button(
+            "",
+            use_container_width=True,
+            key="btn_new_chat",
+        ):
             st.session_state.active_chat_messages = []
             st.session_state.page = "chat"
             st.rerun()
 
+        # Make the Streamlit button invisible; keep click target.
+        st.markdown(
+            f"""
+            <div style="margin-top:-2.6rem;">
+              <style>
+                div[data-testid="stButton"] button[aria-label=""] {{
+                  opacity: 0 !important;
+                  position: relative;
+                }}
+              </style>
+              <div style="pointer-events:none; margin-top:.0rem; padding:.55rem .8rem; border-radius:12px; border:1px solid var(--border); background:color-mix(in srgb, var(--surface) 80%, transparent); display:flex; align-items:center; gap:.65rem;">
+                <div style="width:34px;height:34px;border-radius:999px;background:var(--gradient);display:flex;align-items:center;justify-content:center;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 5v14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                      <path d="M5 12h14" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div style="font-weight:850; color:var(--text); line-height:1.1;">New chat</div>
+              </div>
+              <div style="height:.4rem"></div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
         st.markdown("<div style='height:.5rem'></div>", unsafe_allow_html=True)
+
 
         current_page = st.session_state.get("page", "dashboard")
         for page_key, icon_key, label in NAV_ITEMS:
@@ -76,19 +107,26 @@ def render_sidebar(user: dict):
 
         st.markdown(
             f"""
-            <div style="display:flex;align-items:center;gap:.6rem;opacity:.9;padding:.35rem .2rem .2rem .2rem;">
+            <div style="display:flex;align-items:center;gap:.6rem;opacity:.95;padding:.35rem .2rem .2rem .2rem;">
               <div style="width:40px;height:40px;border-radius:14px;background:color-mix(in srgb, var(--surface) 60%, transparent);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
                 {avatar_svg}
               </div>
               <div>
-                <div style="font-weight:800;font-size:.95rem;line-height:1.1;">{user.get('name','User')}</div>
-                <div class="kai-muted" style="font-size:.7rem;">{user.get('role','user').title()}</div>
+                <div style="font-weight:900;font-size:.95rem;line-height:1.1;color:#000;">{user.get('name','User')}</div>
+                <div style="font-size:.7rem;color:#000;">{user.get('role','user').title()}</div>
               </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
         if st.button("Logout", use_container_width=True, key="btn_logout"):
+            # Prevent old user identity from flashing during rerender.
+            st.session_state.authenticated = False
+            st.session_state.page = "login"
+            st.session_state.user = None
+            # Clear chat-related keys (keep Streamlit internals stable)
             for k in list(st.session_state.keys()):
-                del st.session_state[k]
+                if k not in {"authenticated", "page", "user"}:
+                    del st.session_state[k]
             st.rerun()
+

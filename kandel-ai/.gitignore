@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Secrets — never commit real keys
+.streamlit/secrets.toml
+
+# Local runtime data
+data/memory.json
+data/chroma_store/
+uploads/*
+!uploads/.gitkeep
+
+.DS_Store
+*.log

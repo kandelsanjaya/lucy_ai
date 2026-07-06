@@ -1,0 +1,12 @@
+<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lucyGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#a78bfa"/>
+          <stop offset="50%" stop-color="#818cf8"/>
+          <stop offset="100%" stop-color="#38bdf8"/>
+        </linearGradient>
+      </defs>
+      <path d="M24 3C24 3 30 14 30 22C30 30 24 34 24 34C24 34 18 30 18 22C18 14 24 3 24 3Z" fill="url(#lucyGrad)" opacity="0.9"/>
+      <path d="M12 18C12 18 20 20 24 26C28 32 26 41 26 41C26 41 16 39 12 32C8 25 12 18 12 18Z" fill="url(#lucyGrad)" opacity="0.75"/>
+      <path d="M36 18C36 18 28 20 24 26C20 32 22 41 22 41C22 41 32 39 36 32C40 25 36 18 36 18Z" fill="url(#lucyGrad)" opacity="0.6"/>
+    </svg>

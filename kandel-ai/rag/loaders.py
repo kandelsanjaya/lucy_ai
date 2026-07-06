@@ -1,68 +1,87 @@
 """
-KANDEL AI - Document Loaders
-Designed by Kandel Sanjaya
+Lucy AI — Loader & Background FX
+--------------------------------
+Two visual pieces, both adapted (restyled to Lucy's palette) from
+Uiverse.io community CSS patterns:
 
-PDF parsing prefers LlamaParse (better table/layout-aware chunking) when
-LLAMA_CLOUD_API_KEY is set in .env, and transparently falls back to pypdf
-otherwise so the app still works with zero extra keys.
+1. `LOADER_HTML`   — an orbiting-electron "thinking" loader, used anywhere
+   we'd otherwise show a plain spinner (chat replies, image generation, etc).
+2. `galaxy_background()` — a multi-layer animated starfield, used as the
+   fixed backdrop on the Dashboard and Chat pages.
 """
-import os
-import pandas as pd
-from pypdf import PdfReader
-import docx
 
-LLAMA_CLOUD_API_KEY = os.getenv("LLAMA_CLOUD_API_KEY", "")
+import random
 
+# --------------------------------------------------------------------------
+# Electron loader
+# --------------------------------------------------------------------------
+LOADER_HTML = """
+<div class="lucy-loader-wrap">
+  <div class="lucy-loader">
+    <div class="nucleus"></div>
+    <div class="electron electron1"></div>
+    <div class="electron electron2"></div>
+    <div class="electron electron3"></div>
+  </div>
+  <div class="lucy-loader-label">{label}</div>
+</div>
+"""
 
-def _parse_pdf_with_llamaparse(filepath: str) -> str:
-    from llama_parse import LlamaParse
-    parser = LlamaParse(api_key=LLAMA_CLOUD_API_KEY, result_type="markdown")
-    documents = parser.load_data(filepath)
-    return "\n\n".join(doc.text for doc in documents)
-
-
-def _parse_pdf_with_pypdf(filepath: str) -> str:
-    reader = PdfReader(filepath)
-    return "\n".join(page.extract_text() or "" for page in reader.pages)
-
-
-def load_text_from_file(filepath: str) -> str:
-    ext = os.path.splitext(filepath)[1].lower()
-
-    if ext == ".pdf":
-        if LLAMA_CLOUD_API_KEY:
-            try:
-                return _parse_pdf_with_llamaparse(filepath)
-            except Exception:
-                # LlamaParse failed (bad key, network, package missing) - fall back safely
-                return _parse_pdf_with_pypdf(filepath)
-        return _parse_pdf_with_pypdf(filepath)
-
-    if ext == ".docx":
-        d = docx.Document(filepath)
-        return "\n".join(p.text for p in d.paragraphs)
-
-    if ext in (".txt", ".md", ".html", ".json"):
-        with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
-            return f.read()
-
-    if ext == ".csv":
-        df = pd.read_csv(filepath)
-        return df.to_string()
-
-    if ext in (".xlsx", ".xls"):
-        df = pd.read_excel(filepath)
-        return df.to_string()
-
-    raise ValueError(f"Unsupported file type: {ext}")
+SPLASH_HTML = """
+<div class="lucy-splash">
+  <div class="lucy-loader">
+    <div class="nucleus"></div>
+    <div class="electron electron1"></div>
+    <div class="electron electron2"></div>
+    <div class="electron electron3"></div>
+  </div>
+  <div class="lucy-splash-title">Lucy AI is waking up...</div>
+</div>
+"""
 
 
-def chunk_text(text: str, chunk_size: int = 800, overlap: int = 120):
-    chunks = []
-    start = 0
-    n = len(text)
-    while start < n:
-        end = min(start + chunk_size, n)
-        chunks.append(text[start:end])
-        start += chunk_size - overlap
-    return [c.strip() for c in chunks if c.strip()]
+def loader_html(label: str = "Lucy is thinking...") -> str:
+    return LOADER_HTML.format(label=label)
+
+
+# --------------------------------------------------------------------------
+# Galaxy / starfield background
+# --------------------------------------------------------------------------
+def _star_shadows(n: int, width: int, height: int, seed: int) -> str:
+    rnd = random.Random(seed)
+    return ", ".join(
+        f"{rnd.randint(0, width)}px {rnd.randint(0, height)}px #fff" for _ in range(n)
+    )
+
+
+# Generated once at import time — deterministic (seeded) so the starfield
+# looks the same on every rerun instead of jumping around.
+_STARS_1 = _star_shadows(140, 1600, 1000, seed=1)
+_STARS_2 = _star_shadows(70, 1600, 1000, seed=2)
+_STARS_3 = _star_shadows(40, 1600, 1000, seed=3)
+
+GALAXY_HTML = f"""
+<div class="lucy-galaxy">
+  <div id="g-stars" style="box-shadow:{_STARS_1};"></div>
+  <div id="g-stars2" style="box-shadow:{_STARS_2};"></div>
+  <div id="g-stars3" style="box-shadow:{_STARS_3};"></div>
+</div>
+"""
+
+
+def run_with_loader(container, fn, *args, label: str = "Lucy is thinking...", **kwargs):
+    """
+    Show the electron loader inside `container` (an st.empty() placeholder)
+    while `fn(*args, **kwargs)` executes, then clear it and return the result.
+    """
+    container.markdown(loader_html(label), unsafe_allow_html=True)
+    try:
+        result = fn(*args, **kwargs)
+    finally:
+        container.empty()
+    return result
+
+
+def galaxy_background() -> str:
+    """Return the HTML for the fixed animated starfield backdrop."""
+    return GALAXY_HTML

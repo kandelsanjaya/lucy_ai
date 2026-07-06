@@ -1,5 +1,5 @@
 """
-KANDEL AI - Supervisor Agent
+KANDEL A - Supervisor Agent
 Designed by Kandel Sanjaya
 
 Routes a user query through: Memory -> RAG -> Web Search -> LLM synthesis,
