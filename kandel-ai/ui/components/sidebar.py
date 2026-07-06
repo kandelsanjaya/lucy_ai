@@ -55,10 +55,35 @@ def render_sidebar(user: dict):
                 st.rerun()
 
         st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
+        avatar_name = (user.get('name') or 'User').strip()
+        initial = avatar_name[0].upper() if avatar_name else 'U'
+
+        # ChatGPT-like avatar (always SVG; no external images needed)
+        avatar_svg = f"""
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="g" x1="4" y1="2" x2="26" y2="28" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#60a5fa"/>
+              <stop offset="1" stop-color="#a78bfa"/>
+            </linearGradient>
+          </defs>
+          <circle cx="14" cy="14" r="13" fill="url(#g)"/>
+          <circle cx="14" cy="14" r="13" fill="white" fill-opacity="0.10"/>
+          <text x="14" y="18" text-anchor="middle" font-family="ui-sans-serif, system-ui" font-size="12" font-weight="800" fill="white">{initial}</text>
+          <path d="M7 17c2.2-3.2 11.8-3.2 14 0" stroke="white" stroke-opacity="0.35" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        """
+
         st.markdown(
             f"""
-            <div class="kai-nav-item" style="opacity:.85;">
-                {icon('user', 18)} <span>{user.get('name','User')} · {user.get('role','user').title()}</span>
+            <div style="display:flex;align-items:center;gap:.6rem;opacity:.9;padding:.35rem .2rem .2rem .2rem;">
+              <div style="width:40px;height:40px;border-radius:14px;background:color-mix(in srgb, var(--surface) 60%, transparent);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;">
+                {avatar_svg}
+              </div>
+              <div>
+                <div style="font-weight:800;font-size:.95rem;line-height:1.1;">{user.get('name','User')}</div>
+                <div class="kai-muted" style="font-size:.7rem;">{user.get('role','user').title()}</div>
+              </div>
             </div>
             """,
             unsafe_allow_html=True,

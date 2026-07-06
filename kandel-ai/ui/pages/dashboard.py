@@ -58,16 +58,24 @@ def render_dashboard(user: dict):
 
         st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
         st.markdown("#### Quick Actions")
-        qa1, qa2, qa3, qa4, qa5 = st.columns(5)
+
+        # ChatGPT-like quick actions (no SVG icons)
         actions = [
-            ("Summarize PDF", "documents"), ("Generate Image", "image"),
-            ("Write Code", "code"), ("Translate Text", "translate"), ("Analyze Data", "analytics"),
+            ("Summarize PDF", "documents", "📄"),
+            ("Generate Image", "image", "🖼️"),
+            ("Write Code", "code", "⌨️"),
+            ("Translate Text", "translate", "🌍"),
+            ("Analyze Data", "analytics", "📈"),
         ]
-        for col, (label, target) in zip([qa1, qa2, qa3, qa4, qa5], actions):
+
+        cols = st.columns(5)
+        for col, (label, target, glyph) in zip(cols, actions):
             with col:
-                if st.button(label, key=f"qa_{target}", use_container_width=True):
+                btn_label = f"{glyph} {label}"
+                if st.button(btn_label, key=f"qa_{target}", use_container_width=True):
                     st.session_state.page = target
                     st.rerun()
+
 
     with right:
         st.markdown('<div class="kai-card">', unsafe_allow_html=True)

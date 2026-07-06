@@ -165,23 +165,132 @@ section[data-testid="stSidebar"] {{
     100% {{ border-right-color: transparent; }}
 }}
 
-/* ---------- Sparkle gradient CTA button ---------- */
+/* ---------- Uiverse-style animated CTA buttons (Streamlit compatible) ---------- */
+/* Streamlit markup is typically: div.stButton > button and div.stFormSubmitButton > button */
 div.stButton > button, div.stFormSubmitButton > button {{
-    position: relative;
-    background: var(--gradient) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 9999px !important;
-    padding: .6rem 1.5rem !important;
+    position: relative !important;
+    padding: 14px 42px !important;
+
+    /* Uiverse base */
+    background: #fec195 !important;
+    border: 1px solid rgb(88, 28, 135) !important;
+
+    border-radius: 12px !important;
+
+    font-size: 16px !important;
     font-weight: 600 !important;
-    transition: transform .25s ease, box-shadow .25s ease !important;
-    box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--accent) 60%, transparent);
+    color: #000000 !important;
+
+
+    cursor: pointer !important;
+    filter: drop-shadow(2px 2px 3px rgba(0, 0, 0, 0.2));
+
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .35s ease !important;
+    box-shadow: 0 10px 30px -18px rgba(0,0,0,.5);
+
+    /* custom animated paint */
+    background-size: 250% 250% !important;
+    background-position: 0% 50% !important;
+    overflow: hidden;
 }}
-div.stButton > button:hover, div.stFormSubmitButton > button:hover {{
-    transform: scale(1.04);
+
+/* Provide decorative “icons” via pseudo-elements so every Streamlit button gets the same feel */
+div.stButton > button::before,
+div.stFormSubmitButton > button::before {{
+    content: "";
+    position: absolute;
+    inset: -40% -20% auto -20%;
+    height: 180%;
+    background: radial-gradient(circle at 20% 10%, rgba(255,255,255,.55), transparent 45%),
+                linear-gradient(90deg, rgba(255,255,255,.0), rgba(255,255,255,.25), rgba(255,255,255,.0));
+    transform: rotate(8deg);
+    opacity: .0;
+    transition: opacity .25s ease;
+    pointer-events: none;
+}}
+
+div.stButton > button::after,
+div.stFormSubmitButton > button::after {{
+    /* left ornament */
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 14px;
+    width: 18px;
+    height: 100%;
+    background: radial-gradient(circle at 50% 15%, rgba(0,0,0,.18), transparent 55%),
+                linear-gradient(135deg, rgba(255,255,255,.35), rgba(255,255,255,0));
+    opacity: .0;
+    transform: rotate(-6deg);
+    transition: opacity .25s ease, transform .25s ease;
+    pointer-events: none;
+}}
+
+/* Hover / animation state (match Uiverse logic) */
+div.stButton > button:hover,
+div.stFormSubmitButton > button:hover {{
+    border: 1px solid rgb(88, 28, 135) !important;
+
+    background: linear-gradient(
+        85deg,
+        #fec195,
+        #fcc196,
+        #fabd92,
+        #fac097,
+        #fac39c
+    ) !important;
+
+    animation: wind 2s ease-in-out infinite;
+    transform: translateY(-1px) scale(1.02) !important;
     box-shadow: 0 0 22px color-mix(in srgb, var(--accent2) 70%, transparent);
 }}
-div.stButton > button:active {{ transform: scale(0.97); }}
+
+div.stButton > button:hover::before,
+div.stFormSubmitButton > button:hover::before {{ opacity: .9; }}
+
+div.stButton > button:hover::after,
+div.stFormSubmitButton > button:hover::after {{
+    opacity: .9;
+    animation: slay-2 3s cubic-bezier(0.52, 0, 0.58, 1) 1s infinite;
+    transform: rotate(0deg);
+}}
+
+div.stButton > button:hover span,
+div.stFormSubmitButton > button:hover span {{
+    /* tiny lift / glow on label */
+    text-shadow: 0 0 18px rgba(34,211,238,.35);
+}}
+
+div.stButton > button:active,
+div.stFormSubmitButton > button:active {{ transform: scale(0.97) !important; }}
+
+@keyframes wind {{{{ 
+    0% {{ background-position: 0% 50%; }}
+    0% {{ background-position: 50% 100%; }}
+    0% {{ background-position: 0% 50%; }}
+}}}}
+
+@keyframes slay-2 {{{{ 
+    0% {{ transform: rotate(0deg); }}
+    50% {{ transform: rotate(15deg); }}
+    100% {{ transform: rotate(0); }}
+}}}}
+
+
+
+
+
+
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {{
+    div.stButton > button:hover,
+    div.stFormSubmitButton > button:hover {{ animation: none !important; }}
+    div.stButton > button:hover::after,
+    div.stFormSubmitButton > button:hover::after {{ animation: none !important; }}
+}}
+
+
 
 /* ---------- Theme sun/moon switch ---------- */
 .kai-switch {{ position: relative; width: 3.4em; height: 1.9em; display: inline-block; }}
@@ -256,5 +365,105 @@ div.stButton > button:active {{ transform: scale(0.97); }}
 
 h1, h2, h3, h4, p, span, div {{ color: var(--text); }}
 .kai-muted {{ color: var(--muted) !important; }}
+
+/* ---------- ChatGPT-like layout polish ---------- */
+.kai-shell {{
+    max-width: 1200px;
+    margin: 0 auto;
+}}
+
+.kai-page-header {{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}}
+.kai-page-title {{
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}}
+.kai-page-subtitle {{
+    color: var(--muted);
+    font-size: .85rem;
+    margin-top: .25rem;
+}}
+
+.kai-divider {{
+    height: 1px;
+    width: 100%;
+    background: var(--border);
+    margin: .9rem 0;
+}}
+
+.kai-section-title {{
+    font-weight: 800;
+    font-size: .95rem;
+    letter-spacing: .01em;
+}}
+
+.kai-action-btn {{
+    width: 100%;
+    text-align: left;
+    padding: .7rem .75rem !important;
+    border-radius: 14px !important;
+    background: color-mix(in srgb, var(--surface) 85%, transparent) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease, filter .2s ease !important;
+}}
+.kai-action-btn:hover {{
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent2) 55%, var(--border));
+    box-shadow: 0 0 22px color-mix(in srgb, var(--accent2) 40%, transparent);
+    filter: brightness(1.05);
+}}
+
+.kai-action-ico {{
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--accent2) 14%, var(--surface));
+    margin-right: .55rem;
+    font-size: 1.05rem;
+}}
+
+.kai-hero-card {{
+    padding: 2.1rem 1.6rem !important;
+    text-align: center;
+}}
+
+.kai-hero-lines {{
+    display:flex;
+    justify-content:center;
+    gap:.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}}
+
+.kai-chip {{
+    display:inline-flex;
+    align-items:center;
+    gap:.35rem;
+    padding:.35rem .65rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    color: var(--muted);
+    font-size: .78rem;
+}}
+
+.kai-link {{
+    color: var(--muted) !important;
+    text-decoration: none;
+    border-bottom: 1px dashed color-mix(in srgb, var(--muted) 55%, transparent);
+}}
+.kai-link:hover {{ color: var(--text) !important; border-bottom-color: var(--text); }}
+
 </style>
 """

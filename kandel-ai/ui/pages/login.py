@@ -4,8 +4,8 @@ Designed by Kandel Sanjaya
 """
 import streamlit as st
 from database.auth import signup, login, create_token
-from ui.components.icons import icon
 from config.settings import settings
+
 
 
 def _password_strength(pw: str) -> tuple:
@@ -24,15 +24,20 @@ def render_login():
 
     # ---------------- LEFT: credentials panel ----------------
     with left:
+        # Header
         st.markdown(
             f"""
-            <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:2rem;">
-                <div style="width:34px;height:34px;border-radius:10px;background:var(--gradient);"></div>
-                <div style="font-weight:800;font-size:1.2rem;">KANDEL AI</div>
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:2rem;">
+                <div style="width:34px;height:34px;border-radius:12px;background:var(--gradient);box-shadow:0 0 26px color-mix(in srgb, var(--accent2) 45%, transparent);"></div>
+                <div>
+                    <div style="font-weight:900;font-size:1.25rem;letter-spacing:-.01em;line-height:1;">KANDEL AI</div>
+                    <div class="kai-muted" style="font-size:.65rem;margin-top:.25rem;">Secure access to your AI workspace</div>
+                </div>
             </div>
             """,
             unsafe_allow_html=True,
         )
+
 
         tab_login, tab_signup = st.tabs(["Sign In", "Sign Up"])
 
@@ -43,10 +48,20 @@ def render_login():
             with st.form("login_form"):
                 email = st.text_input("Email Address", placeholder="you@example.com")
                 password = st.text_input("Password", type="password", placeholder="••••••••")
-                remember = st.checkbox("Remember this device for 30 days")
+                remember = st.checkbox("Remember this device for 30 days", value=False)
+
                 submitted = st.form_submit_button("Sign In to Kandel AI", use_container_width=True)
 
-            st.markdown('<div style="text-align:right;margin-top:-.6rem;"><a href="#" style="font-size:.8rem;">Forgot password?</a></div>', unsafe_allow_html=True)
+
+            st.markdown(
+                '<div style="text-align:right;margin-top:-.6rem;">'
+                '<span class="kai-muted" style="font-size:.8rem;">Forgot password? Contact support to reset.</span>'
+                '</div>',
+                unsafe_allow_html=True,
+            )
+
+            st.markdown("<div class='kai-divider' style='margin:1rem 0 .7rem 0;'></div>", unsafe_allow_html=True)
+
 
             if submitted:
                 if not email or not password:
@@ -63,14 +78,19 @@ def render_login():
                     else:
                         st.error(msg)
 
-            st.markdown('<p class="kai-muted" style="text-align:center;margin-top:1.2rem;font-size:.75rem;letter-spacing:1px;">OR CONTINUE WITH</p>', unsafe_allow_html=True)
+            st.markdown('<p class="kai-muted" style="text-align:center;margin-top:1.1rem;font-size:.75rem;letter-spacing:1px;">OR CONTINUE WITH</p>', unsafe_allow_html=True)
+
             sc1, sc2 = st.columns(2)
             with sc1:
-                st.markdown(f'<div class="kai-card" style="text-align:center;padding:.6rem;">{icon("google",18)} Google</div>', unsafe_allow_html=True)
+                if st.button("Google", use_container_width=True, key="login_google", help="OAuth login not enabled in this build"):
+                    st.info("Google login is not enabled yet.")
+
             with sc2:
-                st.markdown(f'<div class="kai-card" style="text-align:center;padding:.6rem;">{icon("github",18)} GitHub</div>', unsafe_allow_html=True)
+                if st.button("GitHub", use_container_width=True, key="login_github", help="OAuth login not enabled in this build"):
+                    st.info("GitHub login is not enabled yet.")
 
             st.markdown('<p class="kai-muted" style="text-align:center;margin-top:1rem;font-size:.8rem;">Don\'t have an account? Use the Sign Up tab above.</p>', unsafe_allow_html=True)
+
 
         with tab_signup:
             st.markdown("### Create your workspace")
