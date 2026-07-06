@@ -8,8 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Settings:
-    APP_NAME = "KANDEL AI"
-    TAGLINE = "All-in-One RAG AI Platform"
+    # Brand
+    APP_NAME = "Lucy AI"
+    TAGLINE = "Family-friendly All-in-One RAG AI Assistant"
     DESIGNER = "Kandel Sanjaya"
     COPYRIGHT = "© 2026 Kandel Sanjaya. All Rights Reserved."
 

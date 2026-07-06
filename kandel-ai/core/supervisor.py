@@ -15,7 +15,27 @@ from rag.retriever import hybrid_search
 
 DetectorFactory.seed = 0
 
+LUCY_NAME = "Lucy AI"
+
 GREETINGS = {"hi", "hello", "hey", "namaste", "yo", "hola", "bonjour", "salut", "hii", "helo"}
+
+
+def _mentions_lucy(text: str) -> bool:
+    t = text.lower()
+    # match: "lucy", "lucy ai", "hey lucy" etc.
+    return "lucy" in t
+
+
+def is_lucy_greeting(text: str) -> bool:
+    """Trigger only when user greets *and* mentions Lucy (e.g., "hey lucy")."""
+    stripped = text.strip().lower()
+    if not _mentions_lucy(stripped):
+        return False
+    # allow "hey lucy", "hi lucy", "hello lucy" (and also longer messages)
+    first_word = stripped.split(maxsplit=1)[0] if stripped.split() else ""
+    first_word = first_word.rstrip("!.?")
+    return first_word in GREETINGS or stripped.startswith("hey lucy")
+
 
 
 def detect_language(text: str) -> str:
@@ -55,7 +75,7 @@ def route_query(user_id: int, query: str, has_documents: bool = False):
 
 def build_system_prompt(language_hint: str, context: str, agent: str) -> str:
     base = (
-        "You are KANDEL AI, a helpful, precise, and friendly multi-agent AI assistant "
+        "You are Lucy AI, a helpful, precise, and friendly multi-agent AI assistant "
         "designed by Kandel Sanjaya. Always answer in the same language the user wrote in, "
         "unless they explicitly ask for translation. Be concise but thorough. "
         f"You are currently operating as the {agent}."
@@ -72,6 +92,16 @@ def build_system_prompt(language_hint: str, context: str, agent: str) -> str:
             "explicitly instead of guessing - the app will automatically fall back to a live "
             "web search in that case."
         )
+    # Child & family-safe policy (avoid sexual / 18+ content)
+    base += (
+        "\n\nSAFETY RULES (Child & Family Friendly): "
+        "Answer for a general audience. Do not produce sexual content, nudity, pornography, "
+        "or content intended for adults. Avoid violence/gore; if asked, respond safely "
+        "and encourage seeking a trusted adult. Do not provide instructions for self-harm, "
+        "illegal activities, or dangerous acts. If a request is unsafe, refuse briefly "
+        "and offer a safe alternative or age-appropriate guidance."
+    )
+
     return base
 
 

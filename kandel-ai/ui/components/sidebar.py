@@ -7,7 +7,7 @@ from ui.components.icons import icon
 
 NAV_ITEMS = [
     ("dashboard", "dashboard", "Dashboard"),
-    ("chat", "chat", "Chat"),
+    ("chat", "chat", "Lucy Chat"),
     ("documents", "documents", "Documents"),
     ("image", "image", "Image Generation"),
     ("code", "code", "Code Assistant"),
@@ -30,8 +30,8 @@ def render_sidebar(user: dict):
             <div style="display:flex;align-items:center;gap:.5rem;padding:.5rem 0 1rem 0;">
                 <div style="width:34px;height:34px;border-radius:10px;background:var(--gradient);"></div>
                 <div>
-                    <div style="font-weight:800;font-size:1.05rem;">KANDEL AI</div>
-                    <div class="kai-muted" style="font-size:.65rem;">Designed by Kandel Sanjaya</div>
+                    <div style="font-weight:800;font-size:1.05rem;">Lucy AI</div>
+                    <div class="kai-muted" style="font-size:.65rem;">Family-friendly assistant</div>
                 </div>
             </div>
             """,

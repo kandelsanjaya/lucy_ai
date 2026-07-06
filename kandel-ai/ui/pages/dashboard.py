@@ -1,5 +1,5 @@
 """
-KANDEL AI - Dashboard Home
+Lucy AI - Dashboard Home
 Designed by Kandel Sanjaya
 """
 import streamlit as st
@@ -40,6 +40,7 @@ def render_dashboard(user: dict):
         st.markdown('<div class="kai-card">', unsafe_allow_html=True)
         st.markdown('<div class="kai-orb-hero" style="width:120px;height:120px;"></div>', unsafe_allow_html=True)
         st.markdown("#### Ask me anything")
+
         m1, m2, m3 = st.columns(3)
         with m1:
             st.selectbox("Mode", ["Auto", "RAG (Documents)", "Web Search"], label_visibility="collapsed", key="dash_mode")
@@ -48,7 +49,7 @@ def render_dashboard(user: dict):
         with m3:
             st.selectbox("Language", ["Auto Detect", "English", "Nepali", "Hindi"], label_visibility="collapsed", key="dash_lang")
 
-        q = st.text_input("Quick ask", placeholder="Ask KANDEL AI anything...", label_visibility="collapsed", key="quick_ask")
+        q = st.text_input("Quick ask", placeholder="Ask Lucy AI anything...", label_visibility="collapsed", key="quick_ask")
         if st.button("Send to Chat", key="quick_ask_send"):
             if q.strip():
                 st.session_state.pending_query = q

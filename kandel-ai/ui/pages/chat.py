@@ -1,11 +1,11 @@
 """
-KANDEL AI - Chat Page (Cortex AI style with session panel)
+Lucy AI - Chat Page (Child & Family friendly)
 Designed by Kandel Sanjaya
 """
 import streamlit as st
 import json
 import time
-from core.supervisor import answer_query, is_greeting, detect_language
+from core.supervisor import answer_query, is_lucy_greeting, detect_language
 from ui.components.widgets import chat_bubble_user, chat_bubble_ai, message_meta, electron_loader
 from database.db import get_conn
 from memory.memory_store import get_all_memory
@@ -28,7 +28,7 @@ def _session_files(user_id: int):
 def _export_chat_text(messages: list) -> str:
     lines = []
     for m in messages:
-        who = "You" if m["role"] == "user" else "KANDEL AI"
+        who = "You" if m["role"] == "user" else "Lucy AI"
         lines.append(f"{who}: {m['content']}\n")
     return "\n".join(lines)
 
@@ -56,7 +56,7 @@ def _render_session_panel(user: dict, last_model: str, last_latency: float):
     st.markdown("#### 🧠 Agent Memory")
     mems = get_all_memory(user["id"])[:3]
     if not mems:
-        st.caption("KANDEL AI hasn't learned anything about you yet — start chatting.")
+        st.caption("Lucy AI hasn't learned anything about you yet — start chatting.")
     for m in mems:
         st.markdown(
             f'<div style="font-size:.8rem;padding:.3rem 0;">• {m["summary"] or m["answer"][:60]}</div>',
@@ -84,7 +84,7 @@ def render_chat(user: dict):
     with chat_col:
         top_l, top_r = st.columns([4, 2])
         with top_l:
-            st.markdown("### Chat with KANDEL AI")
+            st.markdown("### Chat with Lucy AI")
             st.caption("Ask in any language — I'll detect it, remember our conversation, and search when needed.")
         with top_r:
             if st.session_state.active_chat_messages:
@@ -93,13 +93,13 @@ def render_chat(user: dict):
                 with dc1:
                     st.download_button(
                         "⬇ Chat", data=export_text,
-                        file_name=f"kandel_ai_chat_{int(time.time())}.txt",
+                        file_name=f"lucy_ai_chat_{int(time.time())}.txt",
                         mime="text/plain", use_container_width=True, key="download_chat_btn",
                     )
                 with dc2:
                     st.download_button(
                         "⬇ JSON", data=json.dumps(st.session_state.active_chat_messages, indent=2, default=str),
-                        file_name=f"kandel_ai_chat_{int(time.time())}.json",
+                        file_name=f"lucy_ai_chat_{int(time.time())}.json",
                         mime="application/json", use_container_width=True, key="download_chat_json_btn",
                     )
 
@@ -133,8 +133,8 @@ def render_chat(user: dict):
             st.session_state.active_chat_messages.append({"role": "user", "content": query})
             chat_bubble_user(query)
 
-            if is_greeting(query):
-                greeting_reply = f"Hey {user['name']}! Great to see you. What would you like to work on today?"
+            if is_lucy_greeting(query):
+                greeting_reply = f"Hey {user['name']}! Great to see you. I'm Lucy AI. What would you like to work on today?"
                 chat_bubble_ai(greeting_reply)
                 st.session_state.active_chat_messages.append({"role": "assistant", "content": greeting_reply})
             else:

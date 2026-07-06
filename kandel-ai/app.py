@@ -23,7 +23,7 @@ from ui.pages.misc_pages import (
 from ui.pages.tools_help import render_tools, render_help
 
 st.set_page_config(
-    page_title="KANDEL AI",
+    page_title=settings.APP_NAME,
     page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -75,5 +75,6 @@ st.markdown(
     f"""<div class="kai-muted" style="text-align:center;margin-top:3rem;font-size:.75rem;">
     {settings.COPYRIGHT} · Designed by {settings.DESIGNER}
     </div>""",
+
     unsafe_allow_html=True,
 )
